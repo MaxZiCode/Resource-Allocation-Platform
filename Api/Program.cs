@@ -1,7 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Npgsql;
 using ResourceAllocation.Contracts;
-using ResourceAllocation.Domain.Models;
 using ResourceAllocation.Infrastructure.EntityFramework;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -38,11 +36,8 @@ void AddInfrastructureServices()
 {
     var connectionString = builder.Configuration.GetConnectionString(ResourceNames.Databases.ResourceDb);
 
-    var dataSourceBuilder = new NpgsqlDataSourceBuilder(connectionString);
-    dataSourceBuilder.MapEnum<Status>();
-    var dataSource = dataSourceBuilder.Build();
-
-    builder.Services.AddDbContext<ApplicationDbContext>(options =>
-        options.UseNpgsql(dataSource).UseSnakeCaseNamingConvention()
+    builder.Services.AddNpgsql<ApplicationDbContext>(connectionString,
+        npgsqlOptionsAction: DbContextConfigurator.ConfigureNpgsqlDbContext,
+        optionsAction: DbContextConfigurator.ConfigureDbContext
     );
 }

@@ -1,10 +1,11 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 using NpgsqlTypes;
+using ResourceAllocation.Domain.Models;
 
 #nullable disable
 
-namespace Infrastructure.EntityFramework.Migrations
+namespace ResourceAllocation.Infrastructure.EntityFramework.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration
@@ -13,7 +14,7 @@ namespace Infrastructure.EntityFramework.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterDatabase()
-                .Annotation("Npgsql:Enum:status", "held,confirmed,expired,cancelled")
+                .Annotation("Npgsql:Enum:status", "cancelled,confirmed,expired,held")
                 .Annotation("Npgsql:PostgresExtension:btree_gist", ",,");
 
             migrationBuilder.CreateTable(
@@ -54,7 +55,7 @@ namespace Infrastructure.EntityFramework.Migrations
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     resource_id = table.Column<Guid>(type: "uuid", nullable: false),
                     period = table.Column<NpgsqlRange<DateTime>>(type: "tsrange", nullable: false),
-                    status = table.Column<int>(type: "integer", nullable: false),
+                    status = table.Column<Status>(type: "status", nullable: false),
                     created_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     expires_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true)
                 },

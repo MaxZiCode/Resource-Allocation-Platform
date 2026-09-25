@@ -1,0 +1,86 @@
+services:
+  docker-compose-dashboard:
+    image: "mcr.microsoft.com/dotnet/nightly/aspire-dashboard:13.5"
+    ports:
+      - "18888"
+    expose:
+      - "18889"
+      - "18890"
+    networks:
+      - "aspire"
+    restart: "always"
+  postgres:
+    image: "docker.io/library/postgres:18.3"
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: "scram-sha-256"
+      POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256 --auth-local=scram-sha-256"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+    expose:
+      - "5432"
+    volumes:
+      - type: "volume"
+        target: "/var/lib/postgresql"
+        source: "resource-allocation-postgres"
+        read_only: false
+    networks:
+      - "aspire"
+    healthcheck:
+      test:
+        - "CMD-SHELL"
+        - "pg_isready -U postgres -d resource-db"
+      interval: "5s"
+      timeout: "5s"
+      retries: 10
+      start_period: "10s"
+  api-migrations:
+    image: "${API_MIGRATIONS_IMAGE}"
+    environment:
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY: "in_memory"
+      ConnectionStrings__resource-db: "Host=postgres;Port=5432;Username=postgres;Password=${POSTGRES_PASSWORD};Database=resource-db"
+      RESOURCE_DB_HOST: "postgres"
+      RESOURCE_DB_PORT: "5432"
+      RESOURCE_DB_USERNAME: "postgres"
+      RESOURCE_DB_PASSWORD: "${POSTGRES_PASSWORD}"
+      RESOURCE_DB_URI: "postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/resource-db"
+      RESOURCE_DB_JDBCCONNECTIONSTRING: "jdbc:postgresql://postgres:5432/resource-db"
+      RESOURCE_DB_DATABASENAME: "resource-db"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://docker-compose-dashboard:18889"
+      OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
+      OTEL_SERVICE_NAME: "api-migrations"
+    depends_on:
+      postgres:
+        condition: "service_healthy"
+    networks:
+      - "aspire"
+    restart: "no"
+  api:
+    image: "${API_IMAGE}"
+    environment:
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY: "in_memory"
+      ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
+      HTTP_PORTS: "${API_PORT}"
+      ConnectionStrings__resource-db: "Host=postgres;Port=5432;Username=postgres;Password=${POSTGRES_PASSWORD};Database=resource-db"
+      RESOURCE_DB_HOST: "postgres"
+      RESOURCE_DB_PORT: "5432"
+      RESOURCE_DB_USERNAME: "postgres"
+      RESOURCE_DB_PASSWORD: "${POSTGRES_PASSWORD}"
+      RESOURCE_DB_URI: "postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/resource-db"
+      RESOURCE_DB_JDBCCONNECTIONSTRING: "jdbc:postgresql://postgres:5432/resource-db"
+      RESOURCE_DB_DATABASENAME: "resource-db"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://docker-compose-dashboard:18889"
+      OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
+      OTEL_SERVICE_NAME: "api"
+    ports:
+      - "${API_PORT}"
+    depends_on:
+      api-migrations:
+        condition: "service_completed_successfully"
+    networks:
+      - "aspire"
+networks:
+  aspire:
+    driver: "bridge"
+volumes:
+  resource-allocation-postgres:
+    driver: "local"

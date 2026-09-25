@@ -5,11 +5,12 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using NpgsqlTypes;
+using ResourceAllocation.Domain.Models;
 using ResourceAllocation.Infrastructure.EntityFramework;
 
 #nullable disable
 
-namespace Infrastructure.EntityFramework.Migrations
+namespace ResourceAllocation.Infrastructure.EntityFramework.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -21,7 +22,7 @@ namespace Infrastructure.EntityFramework.Migrations
                 .HasAnnotation("ProductVersion", "10.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "status", new[] { "held", "confirmed", "expired", "cancelled" });
+            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "status", new[] { "cancelled", "confirmed", "expired", "held" });
             NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "btree_gist");
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
@@ -48,8 +49,8 @@ namespace Infrastructure.EntityFramework.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("resource_id");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("integer")
+                    b.Property<Status>("Status")
+                        .HasColumnType("status")
                         .HasColumnName("status");
 
                     b.HasKey("Id")
