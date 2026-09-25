@@ -40,12 +40,12 @@ jobs:
           dotnet-version: '10.0.x'
           cache: true
 
-      - name: Run Tests (Unit + Aspire Integration)
+      - name: Run Tests
         run: dotnet test -c Release --logger "trx;LogFileName=test-results.trx"
         
       - name: Upload Test Results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: test-results
           path: "**/test-results.trx"
