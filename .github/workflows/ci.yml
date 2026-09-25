@@ -1,0 +1,51 @@
+name: CI Pipeline
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+    
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint-and-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.0.x'
+          cache: true
+
+      - name: Check code formatting
+        run: dotnet format --verify-no-changes --verbosity diagnostic
+
+      - name: Check for vulnerable NuGet packages
+        run: dotnet list package --vulnerable --include-transitive
+        
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.0.x'
+          cache: true
+
+      - name: Run Tests (Unit + Aspire Integration)
+        run: dotnet test -c Release --logger "trx;LogFileName=test-results.trx"
+        
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: "**/test-results.trx"
