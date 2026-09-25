@@ -4,8 +4,14 @@ using ResourceAllocation.Contracts;
 var builder = DistributedApplication.CreateBuilder(args);
 
 var resourceDb = SetupDatabase(builder);
-builder.AddProject<ResourceAllocation_Api>("api")
-    .WithReference(resourceDb);
+
+var api = builder.AddProject<ResourceAllocation_Api>("api");
+
+var apiMigrations = api.AddEFMigrations("api-migrations")
+    .WithMigrationsProject<ResourceAllocation_Infrastructure>()
+    .RunDatabaseUpdateOnStart();
+
+api.WaitForCompletion(apiMigrations);
 
 builder.Build().Run();
 

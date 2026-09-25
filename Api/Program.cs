@@ -1,9 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
+using ResourceAllocation.Contracts;
 using ResourceAllocation.Domain.Models;
 using ResourceAllocation.Infrastructure.EntityFramework;
-using ResourceAllocation.Api.Extensions;
-using ResourceAllocation.Contracts;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,9 +21,6 @@ app.MapDefaultEndpoints();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-
-    // TODO: move applying migrations from this project
-    await app.ApplyMigrationsAsync();
 }
 
 app.UseHttpsRedirection();
