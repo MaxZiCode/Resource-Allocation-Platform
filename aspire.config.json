@@ -1,5 +1,5 @@
 {
   "appHost": {
-    "path": "Resource Allocation Platform.AppHost/Resource Allocation Platform.AppHost.csproj"
+    "path": "AppHost/AppHost.csproj"
   }
 }

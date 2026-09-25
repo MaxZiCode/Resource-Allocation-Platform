@@ -1,3 +1,10 @@
+using Microsoft.EntityFrameworkCore;
+using Npgsql;
+using ResourceAllocation.Domain.Models;
+using ResourceAllocation.Infrastructure.EntityFramework;
+using ResourceAllocation.Api.Extensions;
+using ResourceAllocation.Contracts;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
@@ -6,40 +13,40 @@ builder.AddServiceDefaults();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
+AddInfrastructureServices();
+
 var app = builder.Build();
 
 app.MapDefaultEndpoints();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+
+    // TODO: move applying migrations from this project
+    await app.ApplyMigrationsAsync();
 }
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
+app.MapGet("/resource-types", async (ApplicationDbContext context) =>
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
+    var resourceTypes = await context.ResourceTypes.ToListAsync();
+    return resourceTypes;
 })
-.WithName("GetWeatherForecast");
+.WithName("Resource Types");
 
 app.Run();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
+void AddInfrastructureServices()
 {
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    var connectionString = builder.Configuration.GetConnectionString(ResourceNames.Databases.ResourceDb);
+
+    var dataSourceBuilder = new NpgsqlDataSourceBuilder(connectionString);
+    dataSourceBuilder.MapEnum<Status>();
+    var dataSource = dataSourceBuilder.Build();
+
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        options.UseNpgsql(dataSource).UseSnakeCaseNamingConvention()
+    );
 }

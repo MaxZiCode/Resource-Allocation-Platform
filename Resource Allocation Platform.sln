@@ -1,17 +1,35 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.9.12112.369 stable
+VisualStudioVersion = 18.9.12112.369
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api", "Api\Api.csproj", "{CBFA08EA-AECE-205F-7B85-326FD0B81BAD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResourceAllocation.Api", "Api\ResourceAllocation.Api.csproj", "{CBFA08EA-AECE-205F-7B85-326FD0B81BAD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Resource Allocation Platform.AppHost", "Resource Allocation Platform.AppHost\Resource Allocation Platform.AppHost.csproj", "{DE9C68E8-73D5-4161-8E10-CA1EFBEE861D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResourceAllocation.AppHost", "AppHost\ResourceAllocation.AppHost.csproj", "{DE9C68E8-73D5-4161-8E10-CA1EFBEE861D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Resource Allocation Platform.ServiceDefaults", "Resource Allocation Platform.ServiceDefaults\Resource Allocation Platform.ServiceDefaults.csproj", "{7DD96212-F8DC-558F-6E86-6DDBF59E3B86}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResourceAllocation.ServiceDefaults", "ServiceDefaults\ResourceAllocation.ServiceDefaults.csproj", "{7DD96212-F8DC-558F-6E86-6DDBF59E3B86}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Aspire", "Aspire", "{726F3FA6-9111-4AA8-9D57-C040413BBC1E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{5F0042C1-B813-48F4-8803-C834FCCD4099}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResourceAllocation.Domain", "Domain\ResourceAllocation.Domain.csproj", "{7045FA6A-11B6-4D48-BFC7-837149FF1C38}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResourceAllocation.Infrastructure", "Infrastructure\ResourceAllocation.Infrastructure.csproj", "{24941BC6-37B5-45BD-86EA-21B2193DF828}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{C007C963-BDD1-4CE2-8225-38D96C018783}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResourceAllocation.Contracts", "Contracts\ResourceAllocation.Contracts.csproj", "{8651EC7D-67BA-40E2-95B9-CE62BAFACEBE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E3BC9335-188B-45AA-9996-0319C6F3D021}"
+	ProjectSection(SolutionItems) = preProject
+		.dockerignore = .dockerignore
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		add-migration.ps1 = add-migration.ps1
+		aspire.config.json = aspire.config.json
+		LICENSE.txt = LICENSE.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,6 +49,18 @@ Global
 		{7DD96212-F8DC-558F-6E86-6DDBF59E3B86}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7DD96212-F8DC-558F-6E86-6DDBF59E3B86}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7DD96212-F8DC-558F-6E86-6DDBF59E3B86}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7045FA6A-11B6-4D48-BFC7-837149FF1C38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7045FA6A-11B6-4D48-BFC7-837149FF1C38}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7045FA6A-11B6-4D48-BFC7-837149FF1C38}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7045FA6A-11B6-4D48-BFC7-837149FF1C38}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24941BC6-37B5-45BD-86EA-21B2193DF828}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24941BC6-37B5-45BD-86EA-21B2193DF828}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24941BC6-37B5-45BD-86EA-21B2193DF828}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24941BC6-37B5-45BD-86EA-21B2193DF828}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8651EC7D-67BA-40E2-95B9-CE62BAFACEBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8651EC7D-67BA-40E2-95B9-CE62BAFACEBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8651EC7D-67BA-40E2-95B9-CE62BAFACEBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8651EC7D-67BA-40E2-95B9-CE62BAFACEBE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -39,6 +69,9 @@ Global
 		{CBFA08EA-AECE-205F-7B85-326FD0B81BAD} = {5F0042C1-B813-48F4-8803-C834FCCD4099}
 		{DE9C68E8-73D5-4161-8E10-CA1EFBEE861D} = {726F3FA6-9111-4AA8-9D57-C040413BBC1E}
 		{7DD96212-F8DC-558F-6E86-6DDBF59E3B86} = {726F3FA6-9111-4AA8-9D57-C040413BBC1E}
+		{7045FA6A-11B6-4D48-BFC7-837149FF1C38} = {5F0042C1-B813-48F4-8803-C834FCCD4099}
+		{24941BC6-37B5-45BD-86EA-21B2193DF828} = {5F0042C1-B813-48F4-8803-C834FCCD4099}
+		{8651EC7D-67BA-40E2-95B9-CE62BAFACEBE} = {C007C963-BDD1-4CE2-8225-38D96C018783}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E9BABC2E-AEC7-4F60-B9F5-F293595D3612}
